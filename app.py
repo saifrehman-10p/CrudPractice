@@ -9,6 +9,10 @@ from flask_sqlalchemy import SQLAlchemy
 import psycopg2
 from flask import flash
 import sys
+from flask_session import Session
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:12345@localhost/Test'
 db=SQLAlchemy(app)
@@ -28,31 +32,43 @@ con = psycopg2.connect(database="Test", user="postgres", password="12345", host=
 cursor = con.cursor()
 @app.route('/submit', methods=['GET','POST'])
 def submit():
+    try:
+        print(session.get("name"))
+        if session.get("name"):
 
-    if request.method=='POST':
 
 
-        print("heloo")
-        username =request.form['username']
-        email=request.form['password']
+
+            if request.method=='POST':
+
+
+                print("heloo")
+                username =request.form['username']
+                email=request.form['password']
   
 
-        student=People(username,email)
-        db.session.add(student)
-        db.session.commit()
-        return redirect(url_for('landing'))
-    else:
+                student=People(username,email)
+                db.session.add(student)
+                db.session.commit()
+                return redirect(url_for('landing'))
+            else:
          
 
-        i=0
-        i=i+1
-        print(i)
-        studentResult=db.session.query(People).filter(People.id==1)
-        for result in studentResult:
+                # i=0
+                # i=i+1
+                # print(i)
+                # studentResult=db.session.query(People).filter(People.id==1)
+                # for result in studentResult:
 
 
-            print(result.username)
-        return render_template('login3.html')
+                #     print(result.username)
+                return render_template('login3.html')
+        else:
+            return redirect(url_for('login'))
+
+    except:
+        return redirect(url_for('login'))
+
         
     # return render_template('login3.html')
 
@@ -71,7 +87,12 @@ if __name__ == '__main__':
     app.run()
 @app.route("/landing")
 def landing():
-    return render_template('landing.html')
+    print(session.get("name"))
+    if not session.get("name"):
+        return redirect(url_for('login'))
+    else:
+
+        return render_template('landing.html')
 # @app.route("/<name>")
 # def hello(name):
 #     return f"Hello, {(name)}!"
@@ -143,9 +164,11 @@ def login():
     try:
         
         if request.method=='POST':
+            
+
              
        
-        
+       
         #l='saif'
         # cursor.execute('select username from public."People" where username='saif' ')
         # result = cursor.fetchall()
@@ -157,10 +180,12 @@ def login():
                 print(i)
                 if request.form['username'] == i.username and request.form['password'] == i.email:
                 
-
+                    print('You were successfully logged in')
+                    session["name"] = request.form.get("username")
+                    print('You were successfully logged in')
                     return redirect(url_for('landing'))
                 else:
-                   ('Incorrect Username or Password')
+                   return render_template("login2.html")
         else:
 
 
@@ -181,8 +206,12 @@ def Delete():
 
     
     try:
+
+        print(session.get("name"))
+        if session.get("name"):
+            
         
-        if request.method=='POST':
+            if request.method=='POST':
              
        
         
@@ -191,18 +220,22 @@ def Delete():
         # result = cursor.fetchall()
         # print(result)
             #db.session.delete(People).filter(People.username==request.form['username'])
-            People.query.filter(People.username==request.form['username']).delete()
-            db.session.commit()
-            return redirect(url_for('landing'))
+                People.query.filter(People.username==request.form['username']).delete()
+                db.session.commit()
+                return redirect(url_for('landing'))
 
             
-        else:
+            else:
+
 
 
 
 
            
-            return render_template('del.html')
+                return render_template('del.html')
+        else:
+            return redirect(url_for('login'))
+
     except:
         return render_template('login2.html')
 @app.route('/update', methods=['GET', 'POST'])
@@ -216,8 +249,10 @@ def update():
 
     
     try:
+        print(session.get("name"))
+        if session.get("name"):
         
-        if request.method=='POST':
+            if request.method=='POST':
              
        
         
@@ -226,27 +261,29 @@ def update():
         # result = cursor.fetchall()
         # print(result)
             #db.session.delete(People).filter(People.username==request.form['username'])
-            users=People.query.filter(People.username==request.form['username'])
+                users=People.query.filter(People.username==request.form['username'])
             # users.email="lk"
             # db.session.commit()
             # return(redirect(login))
 
-            for i in users:
-                print(i.username)
-                i.email=request.form['password']
+                for i in users:
+                    print(i.username)
+                    i.email=request.form['password']
                 
-                db.session.commit()
-                return redirect(url_for('landing'))
+                    db.session.commit()
+                    return redirect(url_for('landing'))
             
-        else:
+            else:
 
 
 
 
            
-            return render_template('update.html')
+                return render_template('update.html')
+        else:
+            return redirect(url_for('login'))
     except:
-        return render_template('login2.html')
+        return redirect(url_for('login'))
 @app.route('/Delete1', methods=['GET', 'POST'])
 def Delete1():
 
