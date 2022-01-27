@@ -40,7 +40,7 @@ def submit():
         student=People(username,email)
         db.session.add(student)
         db.session.commit()
-        return redirect(url_for('submit'))
+        return redirect(url_for('landing'))
     else:
          
 
@@ -69,6 +69,9 @@ if __name__ == '__main__':
     session['secrrt']='sec'
     db.create_all()
     app.run()
+@app.route("/landing")
+def landing():
+    return render_template('landing.html')
 # @app.route("/<name>")
 # def hello(name):
 #     return f"Hello, {(name)}!"
@@ -153,9 +156,9 @@ def login():
 
                 print(i)
                 if request.form['username'] == i.username and request.form['password'] == i.email:
-                    ('Logged In Successfully')
+                
 
-                    return redirect(url_for('home'))
+                    return redirect(url_for('landing'))
                 else:
                    ('Incorrect Username or Password')
         else:
@@ -190,7 +193,7 @@ def Delete():
             #db.session.delete(People).filter(People.username==request.form['username'])
             People.query.filter(People.username==request.form['username']).delete()
             db.session.commit()
-            return(redirect(login))
+            return redirect(url_for('landing'))
 
             
         else:
@@ -233,8 +236,7 @@ def update():
                 i.email=request.form['password']
                 
                 db.session.commit()
-                return(redirect(login))
-
+                return redirect(url_for('landing'))
             
         else:
 
@@ -245,6 +247,49 @@ def update():
             return render_template('update.html')
     except:
         return render_template('login2.html')
+@app.route('/Delete1', methods=['GET', 'POST'])
+def Delete1():
+
+
+
+
+    
+
+
+
+    
+    try:
+        
+        if request.method=='POST':
+
+             
+       
+        
+        #l='saif'
+        # cursor.execute('select username from public."People" where username='saif' ')
+        # result = cursor.fetchall()
+        # print(result)
+            #db.session.delete(People).filter(People.username==request.form['username'])
+            print('post')
+            cursor.execute('DELETE FROM public."People" WHERE username = %s', (request.form['username'],))
+            # x=cursor.fetchone()
+            # for i in x:
+            #     print(i)
+            # People.query.filter(People.username==request.form['username']).delete()
+            # db.session.commit()
+            return(redirect(login))
+
+            
+        else:
+
+
+
+
+           
+            return render_template('del.html')
+    except:
+        return render_template('login2.html')
+    
 
    
     
