@@ -138,7 +138,8 @@ def esubmit():
 
 @app.route("/")
 def index():
-    #db.create_all()
+    # db.create_all()
+    # app.run()
 
 
    
@@ -361,17 +362,26 @@ def update1():
     try:
         
         if request.method=='POST':
+            
+            
+
+
+
 
              
        
         
         #l='saif'
-        # cursor.execute('select username from public."People" where username='saif' ')
-        # result = cursor.fetchall()
-        # print(result)
+            # cursor.execute('select * from public."People"')
+            # result = cursor.fetchall()
+            # print(result)
             #db.session.delete(People).filter(People.username==request.form['username'])
             print('post')
-            cursor.execute('UPDATE public."People" SET email =%s WHERE username=%s' , (request.form['password'],request.form['username'],))
+           # cursor.execute('UPDATE public."People" set email=%s WHERE username=%s', ('1234','filza',))
+          
+            cursor.execute('UPDATE public."People" SET email = %s WHERE username = %s',('saif123','saif'))
+            #cursor.execute('UPDATE public."Employee" SET password =%s,email =%s,salary =%s,dept =%s WHERE username=%s' , (request.form['password'],request.form['email'],request.form['salary'],request.form['dept'],request.form['username'],))
+            con.commit()
             
             # x=cursor.fetchone()
             # for i in x:
@@ -382,6 +392,7 @@ def update1():
 
             
         else:
+
 
 
 
@@ -458,18 +469,18 @@ def updateemp():
             #db.session.delete(People).filter(People.username==request.form['username'])
             print('post')
         
-            #cursor.execute('UPDATE public."Employee" SET password =%s,email =%s,salary =%s,dept =%s WHERE username=%s' , (request.form['password'],request.form['email'],request.form['salary'],request.form['dept'],request.form['username'],))
+            cursor.execute('UPDATE public."Employee" SET password =%s,email =%s,salary =%s,dept =%s WHERE username=%s' , (request.form['password'],request.form['email'],request.form['salary'],request.form['dept'],request.form['username'],))
+            con.commit()
             #cursor.execute('UPDATE public."Employee" SET password =%s WHERE username=%s' , (request.form['password'],request.form['username'],))
-            users=Employee.query.filter(Employee.username==request.form['username'])
-           # cursor.execute('UPDATE public."People" SET email =%s WHERE username=%s' , (request.form['password'],request.form['username'],))
-            # x=cursor.fetchone()
-            for i in users:
-                i.password=request.form['password']
-                i.email=request.form['email']
-                i.salary=request.form['salary']
-                i.dept=request.form['dept']
+            # users=Employee.query.filter(Employee.username==request.form['username'])
+          
+            # for i in users:
+            #     i.password=request.form['password']
+            #     i.email=request.form['email']
+            #     i.salary=request.form['salary']
+            #     i.dept=request.form['dept']
                 
-                db.session.commit()
+            #con.session.commit()
             return redirect(url_for('landing'))
 
             #     print(i)
